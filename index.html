@@ -3,102 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fari | IA Omnisciente v3</title>
+    <title>Fari | Infirmière Virtuelle</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #020617; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .chat-container { height: 500px; }
-        .bubble-fari { border-radius: 20px 20px 20px 4px; background: #1e293b; color: #f1f5f9; border: 1px solid #334155; }
-        .bubble-user { border-radius: 20px 20px 4px 20px; background: #3b82f6; color: white; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+        
+        body { 
+            background: #f0f9ff; 
+            font-family: 'Outfit', sans-serif; 
+            background-image: radial-gradient(#e0f2fe 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .medical-card { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-area { height: 500px; scroll-behavior: smooth; }
+        
+        /* Style des bulles */
+        .bubble-nurse { 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            border-radius: 20px 20px 20px 4px;
+        }
+        
+        .bubble-patient { 
+            background: #0ea5e9; 
+            color: white;
+            border-radius: 20px 20px 4px 20px;
+        }
+
+        .pulse-red {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
-        <div class="p-4 bg-slate-800/50 flex items-center gap-4">
-            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-robot text-white"></i></div>
-            <div>
-                <h1 class="text-white font-bold">Fari</h1>
-                <p class="text-xs text-blue-400">● Intelligence Omnisciente</p>
+    <div class="w-full max-w-2xl medical-card rounded-[2.5rem] overflow-hidden flex flex-col">
+        <div class="p-6 bg-white border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <div class="w-14 h-14 bg-sky-100 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-user-nurse text-sky-600 text-2xl"></i>
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-4 border-white rounded-full"></div>
+                </div>
+                <div>
+                    <h1 class="text-slate-800 font-bold text-xl">Infirmière Fari</h1>
+                    <p class="text-slate-500 text-xs flex items-center gap-1 italic">
+                        Votre assistante santé 24h/7j
+                    </p>
+                </div>
+            </div>
+            <div class="hidden sm:block text-right">
+                <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest block">Urgence</span>
+                <span class="text-slate-700 font-bold text-lg">112 / 15</span>
             </div>
         </div>
 
-        <div id="chat-box" class="chat-container overflow-y-auto p-4 space-y-4 flex flex-col">
-            <div class="bubble-fari self-start p-3 text-sm max-w-[85%]">
-                Bonjour ! Je suis <b>Fari</b>. Je peux résoudre vos calculs (ex: 1+1), vous donner l'heure, ou discuter de n'importe quoi. Testez-moi !
+        <div id="chat-box" class="chat-area overflow-y-auto p-6 space-y-6 bg-slate-50/50">
+            <div class="flex gap-3">
+                <div class="bubble-nurse p-4 text-sm shadow-sm max-w-[85%] leading-relaxed">
+                    Bonjour, je suis <b>Fari</b>. Je suis là pour vous écouter et vous conseiller. 
+                    <br><br>
+                    Comment vous sentez-vous aujourd'hui ? Avez-vous des symptômes particuliers ou besoin de conseils bien-être ?
+                    <p class="mt-2 text-[10px] text-slate-400 font-medium italic">Note : Je suis une IA, en cas d'urgence grave, contactez immédiatement les secours.</p>
+                </div>
             </div>
         </div>
 
-        <div class="p-4 bg-slate-900 border-t border-slate-800">
-            <div class="flex gap-2">
-                <input type="text" id="user-input" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Posez votre question...">
-                <button onclick="handleSend()" class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-500 transition-all"><i class="fas fa-paper-plane px-2"></i></button>
+        <div id="typing" class="px-8 py-2 hidden">
+            <div class="flex items-center gap-2 text-sky-600 text-xs font-medium">
+                <i class="fas fa-stethoscope animate-bounce"></i> Fari analyse votre demande...
+            </div>
+        </div>
+
+        <div class="p-6 bg-white border-t border-slate-100">
+            <div class="relative flex items-center gap-3">
+                <input type="text" id="user-input" 
+                    class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all shadow-inner" 
+                    placeholder="Décrivez vos symptômes ou posez une question santé...">
+                
+                <button onclick="askFari()" class="bg-sky-600 hover:bg-sky-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg shadow-sky-200 active:scale-95">
+                    <i class="fas fa-notes-medical text-lg"></i>
+                </button>
             </div>
         </div>
     </div>
 
     <script>
+        const API_KEY = "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";
+        const MODEL = "arcee-ai/trinity-large-preview:free";
+        
         const chatBox = document.getElementById('chat-box');
         const input = document.getElementById('user-input');
+        const typing = document.getElementById('typing');
 
-        function handleSend() {
-            const text = input.value.trim();
-            if(!text) return;
-            addMsg(text, 'user');
+        async function askFari() {
+            const prompt = input.value.trim();
+            if (!prompt) return;
+
+            addMessage(prompt, 'user');
             input.value = "";
+            typing.classList.remove('hidden');
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "model": MODEL,
+                        "messages": [
+                            {
+                                "role": "system", 
+                                "content": "Tu es Fari, une infirmière virtuelle professionnelle, douce et rassurante. Ton but est d'aider les utilisateurs à comprendre leurs symptômes, donner des conseils de santé, de nutrition et de bien-être. Règle d'or : Si l'utilisateur décrit des symptômes graves (douleur poitrine, difficulté à respirer), conseille-lui immédiatement d'appeler les urgences. Sois précise et empathique."
+                            },
+                            {"role": "user", "content": prompt}
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                const aiReply = data.choices[0].message.content;
+
+                typing.classList.add('hidden');
+                addMessage(aiReply, 'fari');
+
+            } catch (error) {
+                typing.classList.add('hidden');
+                addMessage("Je rencontre une difficulté technique pour accéder à mon dossier médical. Veuillez réessayer dans un instant.", 'fari');
+            }
+        }
+
+        function addMessage(text, sender) {
+            const wrapper = document.createElement('div');
+            wrapper.className = sender === 'user' ? "flex flex-col items-end" : "flex flex-col items-start";
             
-            setTimeout(() => {
-                const response = fariBrain(text);
-                addMsg(response, 'fari');
-            }, 600);
-        }
+            const bubbleClass = sender === 'user' ? "bubble-patient" : "bubble-nurse";
 
-        function fariBrain(query) {
-            const q = query.toLowerCase();
-
-            // 1. CALCULS MATHÉMATIQUES (1+1, 25*4, etc.)
-            if (/[0-9]/.test(q) && /[+*/-]/.test(q)) {
-                try {
-                    let expression = q.replace(/[^0-9+\-*/().]/g, ""); // Nettoyage strict
-                    let result = eval(expression);
-                    return `Le résultat de <b>${expression}</b> est <b>${result}</b>.`;
-                } catch(e) { /* on continue si ce n'est pas un calcul */ }
-            }
-
-            // 2. SALUTATIONS
-            if (q.includes("salut") || q.includes("bonjour") || q.includes("hi") || q.includes("hello")) {
-                return "Salut ! C'est un plaisir de vous parler. Comment se passe votre journée ?";
-            }
-
-            // 3. QUESTIONS SUR L'IDENTITÉ
-            if (q.includes("qui es-tu") || q.includes("ton nom") || q.includes("fari")) {
-                return "Je suis <b>Fari</b>, votre assistant intelligent. Je suis programmé pour vous aider à résoudre des problèmes et répondre à vos questions.";
-            }
-
-            // 4. CULTURE GÉNÉRALE & SCIENCE (Simulé)
-            if (q.includes("science")) return "La science est la clé de la compréhension de l'univers, de l'atome aux galaxies.";
-            if (q.includes("cuisine")) return "La cuisine est un art ! Mon plat préféré (en code) est le 'Spaghetti d'algorithmes'.";
-            if (q.includes("code")) return "Je maîtrise le HTML, le CSS et le JavaScript. C'est d'ailleurs ce qui me fait vivre !";
-
-            // 5. HEURE ET DATE
-            if (q.includes("heure")) return "Il est actuellement " + new Date().toLocaleTimeString() + ".";
-            if (q.includes("date")) return "Nous sommes le " + new Date().toLocaleDateString() + ".";
-
-            // 6. RÉPONSE UNIVERSELLE (Si rien d'autre ne matche)
-            return `C'est une question intéressante à propos de <b>"${query}"</b>. En tant que Fari, je dirais que cela nécessite une exploration détaillée. Voulez-vous que je vous donne une définition précise ?`;
-        }
-
-        function addMsg(text, type) {
-            const div = document.createElement('div');
-            div.className = type === 'user' ? "bubble-user self-end p-3 text-sm max-w-[85%] shadow-lg" : "bubble-fari self-start p-3 text-sm max-w-[85%] shadow-md";
-            div.innerHTML = text;
-            chatBox.appendChild(div);
+            wrapper.innerHTML = `
+                <div class="${bubbleClass} p-4 text-sm max-w-[90%] shadow-sm whitespace-pre-line leading-relaxed">
+                    ${text}
+                </div>
+            `;
+            chatBox.appendChild(wrapper);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        input.addEventListener("keypress", (e) => { if(e.key === "Enter") handleSend(); });
+        input.addEventListener("keypress", (e) => { if(e.key === "Enter") askFari(); });
     </script>
 </body>
 </html>
-
