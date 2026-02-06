@@ -3,45 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fari | IA Intelligente</title>
+    <title>Fari | IA Omnisciente</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .chat-window { height: 500px; scroll-behavior: smooth; }
+        body { background: #0f172a; font-family: 'Inter', sans-serif; }
+        .chat-area { height: 450px; scrollbar-width: thin; }
+        .fari-bubble { border-radius: 20px 20px 20px 5px; }
+        .user-bubble { border-radius: 20px 20px 5px 20px; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-xl glass rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-        <div class="p-5 border-b border-white/10 flex items-center gap-4 bg-white/5">
-            <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center">
-                <i class="fas fa-brain text-white"></i>
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
+        <div class="p-4 bg-slate-800/50 border-b border-slate-700 flex items-center gap-3">
+            <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <i class="fas fa-sparkles text-white"></i>
             </div>
             <div>
-                <h1 class="text-white font-bold">Fari</h1>
-                <p class="text-emerald-400 text-xs flex items-center gap-1">
-                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Intelligent & Actif
-                </p>
+                <h2 class="text-white font-bold">Fari</h2>
+                <p class="text-xs text-indigo-400">● IA Omnisciente</p>
             </div>
         </div>
 
-        <div id="chat-box" class="chat-window overflow-y-auto p-6 space-y-4">
-            <div class="flex gap-3">
-                <div class="bg-slate-800 text-slate-200 p-3 rounded-2xl rounded-tl-none text-sm">
-                    Bonjour ! Je suis Fari. Je peux calculer, discuter ou répondre à vos questions. Essayez de me demander "Combien font 15 * 4 ?" ou dites-moi simplement "Salut" !
-                </div>
+        <div id="chat-box" class="chat-area overflow-y-auto p-4 space-y-4 flex flex-col">
+            <div class="fari-bubble self-start bg-slate-800 text-slate-200 p-3 text-sm max-w-[85%]">
+                Bonjour ! Je suis <b>Fari</b>. Je peux résoudre des calculs, répondre à vos saluts et discuter. Testez-moi !
             </div>
         </div>
 
-        <div class="p-4 bg-slate-900/50">
-            <div class="relative flex items-center">
+        <div class="p-4 bg-slate-800/30">
+            <div class="flex gap-2">
                 <input type="text" id="user-input" 
-                    class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-4 pr-12 text-slate-100 outline-none focus:border-blue-500"
+                    class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Posez votre question...">
-                <button onclick="askFari()" class="absolute right-2 text-blue-500 hover:text-blue-400 p-2">
+                <button onclick="handleResponse()" class="bg-indigo-600 text-white p-2 rounded-xl hover:bg-indigo-500">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
@@ -50,67 +46,64 @@
 
     <script>
         const chatBox = document.getElementById('chat-box');
-        const userInput = document.getElementById('user-input');
+        const input = document.getElementById('user-input');
 
-        function askFari() {
-            const text = userInput.value.trim();
-            if (!text) return;
+        function handleResponse() {
+            const val = input.value.trim();
+            if(!val) return;
 
-            appendMessage(text, 'user');
-            userInput.value = "";
+            addMsg(val, 'user');
+            input.value = "";
 
             setTimeout(() => {
-                const response = processLogic(text);
-                appendMessage(response, 'fari');
-            }, 600);
+                const reply = logic(val);
+                addMsg(reply, 'fari');
+            }, 500);
         }
 
-        function processLogic(input) {
-            const query = input.toLowerCase();
+        function logic(str) {
+            const clean = str.toLowerCase();
 
-            // 1. Gestion des salutations
-            if (/(hi|hello|salut|bonjour|coucou)/.test(query)) {
-                return "Salut ! Comment puis-je t'aider aujourd'hui ?";
-            }
-
-            // 2. Gestion des calculs mathématiques (Ex: 1+1, 5*10, etc.)
-            // On nettoie la chaîne pour ne garder que les chiffres et opérateurs
-            const mathExpression = query.replace(/[^-+*/0-9.() ]/g, '');
-            if (/[0-9]/.test(mathExpression)) {
+            // 1. Détection Mathématique (ex: 1+1, 5*5)
+            if (/[0-9]/.test(clean) && /[+*/-]/.test(clean)) {
                 try {
-                    // Utilisation de Function au lieu de eval pour plus de sécurité simple
-                    const result = new Function('return ' + mathExpression)();
-                    return `Le résultat de ${mathExpression} est ${result}.`;
-                } catch (e) {
-                    // Si ce n'est pas un calcul valide, on continue
-                }
+                    // Supprime tout sauf les chiffres et opérateurs pour la sécurité
+                    const mathPart = clean.replace(/[^-+*/0-9.()]/g, '');
+                    const result = eval(mathPart); 
+                    return `Le calcul est simple : <b>${mathPart} = ${result}</b>. Autre chose ?`;
+                } catch(e) { }
             }
 
-            // 3. Questions sur l'identité
-            if (query.includes("qui es-tu") || query.includes("ton nom")) {
-                return "Je m'appelle Fari, ton assistant personnel intelligent.";
+            // 2. Salutations
+            if(clean.includes("salut") || clean.includes("hi") || clean.includes("bonjour")) {
+                return "Salut ! C'est un plaisir de vous voir. Que puis-je faire pour vous ?";
             }
 
-            // 4. Réponse par défaut améliorée
-            return "Je comprends votre question sur '" + input + "'. Pourriez-vous me donner plus de détails pour que je puisse vous aider au mieux ?";
+            // 3. Questions d'identité
+            if(clean.includes("qui es-tu") || clean.includes("ton nom")) {
+                return "Je suis <b>Fari</b>, votre assistant intelligent conçu pour répondre à tout !";
+            }
+
+            // 4. Questions sur l'heure
+            if(clean.includes("heure")) {
+                return "Il est exactement " + new Date().toLocaleTimeString() + ".";
+            }
+
+            // 5. Fallback (Réponse par défaut plus "intelligente")
+            return `Vous me demandez à propos de "${str}". C'est un sujet intéressant ! Pourriez-vous préciser votre pensée pour que je vous donne une réponse d'expert ?`;
         }
 
-        function appendMessage(text, sender) {
-            const side = sender === 'user' ? "justify-end" : "justify-start";
-            const color = sender === 'user' ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200";
-            const radius = sender === 'user' ? "rounded-tr-none" : "rounded-tl-none";
-            
-            const msg = `
-                <div class="flex ${side}">
-                    <div class="${color} p-3 rounded-2xl ${radius} text-sm max-w-[80%] shadow-md">
-                        ${text}
-                    </div>
-                </div>`;
-            chatBox.insertAdjacentHTML('beforeend', msg);
+        function addMsg(text, type) {
+            const div = document.createElement('div');
+            div.className = type === 'user' 
+                ? "user-bubble self-end bg-indigo-600 text-white p-3 text-sm max-w-[85%] shadow-md"
+                : "fari-bubble self-start bg-slate-800 text-slate-200 p-3 text-sm max-w-[85%] border border-slate-700";
+            div.innerHTML = text;
+            chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        userInput.addEventListener("keypress", (e) => { if(e.key === "Enter") askFari(); });
+        input.addEventListener("keypress", (e) => { if(e.key === "Enter") handleResponse(); });
     </script>
 </body>
 </html>
