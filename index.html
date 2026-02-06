@@ -3,43 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fari | IA Omnisciente</title>
+    <title>Fari | IA Omnisciente v3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #0f172a; font-family: 'Inter', sans-serif; }
-        .chat-area { height: 450px; scrollbar-width: thin; }
-        .fari-bubble { border-radius: 20px 20px 20px 5px; }
-        .user-bubble { border-radius: 20px 20px 5px 20px; }
+        body { background: #020617; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .chat-container { height: 500px; }
+        .bubble-fari { border-radius: 20px 20px 20px 4px; background: #1e293b; color: #f1f5f9; border: 1px solid #334155; }
+        .bubble-user { border-radius: 20px 20px 4px 20px; background: #3b82f6; color: white; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
-        <div class="p-4 bg-slate-800/50 border-b border-slate-700 flex items-center gap-3">
-            <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                <i class="fas fa-sparkles text-white"></i>
-            </div>
+    <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
+        <div class="p-4 bg-slate-800/50 flex items-center gap-4">
+            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-robot text-white"></i></div>
             <div>
-                <h2 class="text-white font-bold">Fari</h2>
-                <p class="text-xs text-indigo-400">● IA Omnisciente</p>
+                <h1 class="text-white font-bold">Fari</h1>
+                <p class="text-xs text-blue-400">● Intelligence Omnisciente</p>
             </div>
         </div>
 
-        <div id="chat-box" class="chat-area overflow-y-auto p-4 space-y-4 flex flex-col">
-            <div class="fari-bubble self-start bg-slate-800 text-slate-200 p-3 text-sm max-w-[85%]">
-                Bonjour ! Je suis <b>Fari</b>. Je peux résoudre des calculs, répondre à vos saluts et discuter. Testez-moi !
+        <div id="chat-box" class="chat-container overflow-y-auto p-4 space-y-4 flex flex-col">
+            <div class="bubble-fari self-start p-3 text-sm max-w-[85%]">
+                Bonjour ! Je suis <b>Fari</b>. Je peux résoudre vos calculs (ex: 1+1), vous donner l'heure, ou discuter de n'importe quoi. Testez-moi !
             </div>
         </div>
 
-        <div class="p-4 bg-slate-800/30">
+        <div class="p-4 bg-slate-900 border-t border-slate-800">
             <div class="flex gap-2">
-                <input type="text" id="user-input" 
-                    class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Posez votre question...">
-                <button onclick="handleResponse()" class="bg-indigo-600 text-white p-2 rounded-xl hover:bg-indigo-500">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+                <input type="text" id="user-input" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Posez votre question...">
+                <button onclick="handleSend()" class="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-500 transition-all"><i class="fas fa-paper-plane px-2"></i></button>
             </div>
         </div>
     </div>
@@ -48,62 +42,62 @@
         const chatBox = document.getElementById('chat-box');
         const input = document.getElementById('user-input');
 
-        function handleResponse() {
-            const val = input.value.trim();
-            if(!val) return;
-
-            addMsg(val, 'user');
+        function handleSend() {
+            const text = input.value.trim();
+            if(!text) return;
+            addMsg(text, 'user');
             input.value = "";
-
+            
             setTimeout(() => {
-                const reply = logic(val);
-                addMsg(reply, 'fari');
-            }, 500);
+                const response = fariBrain(text);
+                addMsg(response, 'fari');
+            }, 600);
         }
 
-        function logic(str) {
-            const clean = str.toLowerCase();
+        function fariBrain(query) {
+            const q = query.toLowerCase();
 
-            // 1. Détection Mathématique (ex: 1+1, 5*5)
-            if (/[0-9]/.test(clean) && /[+*/-]/.test(clean)) {
+            // 1. CALCULS MATHÉMATIQUES (1+1, 25*4, etc.)
+            if (/[0-9]/.test(q) && /[+*/-]/.test(q)) {
                 try {
-                    // Supprime tout sauf les chiffres et opérateurs pour la sécurité
-                    const mathPart = clean.replace(/[^-+*/0-9.()]/g, '');
-                    const result = eval(mathPart); 
-                    return `Le calcul est simple : <b>${mathPart} = ${result}</b>. Autre chose ?`;
-                } catch(e) { }
+                    let expression = q.replace(/[^0-9+\-*/().]/g, ""); // Nettoyage strict
+                    let result = eval(expression);
+                    return `Le résultat de <b>${expression}</b> est <b>${result}</b>.`;
+                } catch(e) { /* on continue si ce n'est pas un calcul */ }
             }
 
-            // 2. Salutations
-            if(clean.includes("salut") || clean.includes("hi") || clean.includes("bonjour")) {
-                return "Salut ! C'est un plaisir de vous voir. Que puis-je faire pour vous ?";
+            // 2. SALUTATIONS
+            if (q.includes("salut") || q.includes("bonjour") || q.includes("hi") || q.includes("hello")) {
+                return "Salut ! C'est un plaisir de vous parler. Comment se passe votre journée ?";
             }
 
-            // 3. Questions d'identité
-            if(clean.includes("qui es-tu") || clean.includes("ton nom")) {
-                return "Je suis <b>Fari</b>, votre assistant intelligent conçu pour répondre à tout !";
+            // 3. QUESTIONS SUR L'IDENTITÉ
+            if (q.includes("qui es-tu") || q.includes("ton nom") || q.includes("fari")) {
+                return "Je suis <b>Fari</b>, votre assistant intelligent. Je suis programmé pour vous aider à résoudre des problèmes et répondre à vos questions.";
             }
 
-            // 4. Questions sur l'heure
-            if(clean.includes("heure")) {
-                return "Il est exactement " + new Date().toLocaleTimeString() + ".";
-            }
+            // 4. CULTURE GÉNÉRALE & SCIENCE (Simulé)
+            if (q.includes("science")) return "La science est la clé de la compréhension de l'univers, de l'atome aux galaxies.";
+            if (q.includes("cuisine")) return "La cuisine est un art ! Mon plat préféré (en code) est le 'Spaghetti d'algorithmes'.";
+            if (q.includes("code")) return "Je maîtrise le HTML, le CSS et le JavaScript. C'est d'ailleurs ce qui me fait vivre !";
 
-            // 5. Fallback (Réponse par défaut plus "intelligente")
-            return `Vous me demandez à propos de "${str}". C'est un sujet intéressant ! Pourriez-vous préciser votre pensée pour que je vous donne une réponse d'expert ?`;
+            // 5. HEURE ET DATE
+            if (q.includes("heure")) return "Il est actuellement " + new Date().toLocaleTimeString() + ".";
+            if (q.includes("date")) return "Nous sommes le " + new Date().toLocaleDateString() + ".";
+
+            // 6. RÉPONSE UNIVERSELLE (Si rien d'autre ne matche)
+            return `C'est une question intéressante à propos de <b>"${query}"</b>. En tant que Fari, je dirais que cela nécessite une exploration détaillée. Voulez-vous que je vous donne une définition précise ?`;
         }
 
         function addMsg(text, type) {
             const div = document.createElement('div');
-            div.className = type === 'user' 
-                ? "user-bubble self-end bg-indigo-600 text-white p-3 text-sm max-w-[85%] shadow-md"
-                : "fari-bubble self-start bg-slate-800 text-slate-200 p-3 text-sm max-w-[85%] border border-slate-700";
+            div.className = type === 'user' ? "bubble-user self-end p-3 text-sm max-w-[85%] shadow-lg" : "bubble-fari self-start p-3 text-sm max-w-[85%] shadow-md";
             div.innerHTML = text;
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        input.addEventListener("keypress", (e) => { if(e.key === "Enter") handleResponse(); });
+        input.addEventListener("keypress", (e) => { if(e.key === "Enter") handleSend(); });
     </script>
 </body>
 </html>
