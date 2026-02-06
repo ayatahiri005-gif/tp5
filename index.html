@@ -3,91 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fari | Votre Assistant IA</title>
+    <title>Fari | IA Intelligente</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap');
-        
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at top left, #1e1b4b, #020617);
-        }
-
-        .chat-window {
-            height: calc(100vh - 160px);
-            max-height: 600px;
-        }
-
-        .glass-effect {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .typing-dot {
-            width: 6px;
-            height: 6px;
-            background: #94a3b8;
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
-        @keyframes typing {
-            0%, 100% { opacity: 0.2; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(-3px); }
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .chat-window { height: 500px; scroll-behavior: smooth; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-2xl glass-effect rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-        <div class="p-5 border-b border-white/10 flex justify-between items-center bg-white/5">
-            <div class="flex items-center gap-4">
-                <div class="relative">
-                    <div class="w-12 h-12 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                        <i class="fas fa-robot text-white text-xl"></i>
-                    </div>
-                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
-                </div>
-                <div>
-                    <h1 class="text-white font-bold text-lg leading-none">Fari</h1>
-                    <p class="text-slate-400 text-xs mt-1">IA Omnisciente • En ligne</p>
-                </div>
+    <div class="w-full max-w-xl glass rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+        <div class="p-5 border-b border-white/10 flex items-center gap-4 bg-white/5">
+            <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center">
+                <i class="fas fa-brain text-white"></i>
             </div>
-            <button class="text-slate-400 hover:text-white transition-colors">
-                <i class="fas fa-ellipsis-v"></i>
-            </button>
+            <div>
+                <h1 class="text-white font-bold">Fari</h1>
+                <p class="text-emerald-400 text-xs flex items-center gap-1">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Intelligent & Actif
+                </p>
+            </div>
         </div>
 
-        <div id="chat-box" class="chat-window overflow-y-auto p-6 space-y-6">
+        <div id="chat-box" class="chat-window overflow-y-auto p-6 space-y-4">
             <div class="flex gap-3">
-                <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-robot text-indigo-400 text-xs"></i>
-                </div>
-                <div class="bg-slate-800/80 text-slate-200 p-4 rounded-2xl rounded-tl-none max-w-[85%] text-sm leading-relaxed">
-                    Bonjour ! Je suis <strong>Fari</strong>. Posez-moi n'importe quelle question, que ce soit sur la science, la cuisine, le code ou la philosophie. Je suis là pour vous répondre !
+                <div class="bg-slate-800 text-slate-200 p-3 rounded-2xl rounded-tl-none text-sm">
+                    Bonjour ! Je suis Fari. Je peux calculer, discuter ou répondre à vos questions. Essayez de me demander "Combien font 15 * 4 ?" ou dites-moi simplement "Salut" !
                 </div>
             </div>
         </div>
 
-        <div id="typing-indicator" class="px-6 py-2 hidden">
-            <div class="flex gap-1">
-                <div class="typing-dot" style="animation-delay: 0s"></div>
-                <div class="typing-dot" style="animation-delay: 0.2s"></div>
-                <div class="typing-dot" style="animation-delay: 0.4s"></div>
-            </div>
-        </div>
-
-        <div class="p-6 bg-slate-900/50">
+        <div class="p-4 bg-slate-900/50">
             <div class="relative flex items-center">
                 <input type="text" id="user-input" 
-                    class="w-full bg-slate-800 border border-slate-700 rounded-2xl py-4 pl-6 pr-14 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
-                    placeholder="Demandez n'importe quoi à Fari...">
-                
-                <button onclick="askFari()" 
-                    class="absolute right-2 bg-indigo-600 hover:bg-indigo-500 text-white w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-lg shadow-indigo-600/20">
-                    <i class="fas fa-paper-plane text-sm"></i>
+                    class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-4 pr-12 text-slate-100 outline-none focus:border-blue-500"
+                    placeholder="Posez votre question...">
+                <button onclick="askFari()" class="absolute right-2 text-blue-500 hover:text-blue-400 p-2">
+                    <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
         </div>
@@ -96,55 +51,67 @@
     <script>
         const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
-        const typingIndicator = document.getElementById('typing-indicator');
 
         function askFari() {
-            const message = userInput.value.trim();
-            if (!message) return;
+            const text = userInput.value.trim();
+            if (!text) return;
 
-            // Afficher le message de l'utilisateur
-            appendMessage(message, 'user');
+            appendMessage(text, 'user');
             userInput.value = "";
-            
-            // Montrer que Fari réfléchit
-            typingIndicator.classList.remove('hidden');
-            chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Simuler une réponse intelligente de Fari
             setTimeout(() => {
-                typingIndicator.classList.add('hidden');
-                const response = getFariResponse(message);
+                const response = processLogic(text);
                 appendMessage(response, 'fari');
-            }, 1500);
+            }, 600);
         }
 
-        function getFariResponse(input) {
-            const prompt = input.toLowerCase();
-            if (prompt.includes("qui es-tu") || prompt.includes("ton nom")) 
-                return "Je suis Fari, une intelligence artificielle conçue pour explorer tous les sujets avec vous !";
-            if (prompt.includes("heure")) 
-                return "Il est actuellement " + new Date().toLocaleTimeString() + ". Le temps passe vite quand on discute !";
-            if (prompt.includes("météo"))
-                return "Je n'ai pas accès à votre GPS, mais il fait toujours beau dans le cloud !";
-            
-            return "C'est une question fascinante. En tant que Fari, je dirais que " + input + " mérite une analyse approfondie. Voulez-vous que je développe un point précis sur ce sujet ?";
+        function processLogic(input) {
+            const query = input.toLowerCase();
+
+            // 1. Gestion des salutations
+            if (/(hi|hello|salut|bonjour|coucou)/.test(query)) {
+                return "Salut ! Comment puis-je t'aider aujourd'hui ?";
+            }
+
+            // 2. Gestion des calculs mathématiques (Ex: 1+1, 5*10, etc.)
+            // On nettoie la chaîne pour ne garder que les chiffres et opérateurs
+            const mathExpression = query.replace(/[^-+*/0-9.() ]/g, '');
+            if (/[0-9]/.test(mathExpression)) {
+                try {
+                    // Utilisation de Function au lieu de eval pour plus de sécurité simple
+                    const result = new Function('return ' + mathExpression)();
+                    return `Le résultat de ${mathExpression} est ${result}.`;
+                } catch (e) {
+                    // Si ce n'est pas un calcul valide, on continue
+                }
+            }
+
+            // 3. Questions sur l'identité
+            if (query.includes("qui es-tu") || query.includes("ton nom")) {
+                return "Je m'appelle Fari, ton assistant personnel intelligent.";
+            }
+
+            // 4. Réponse par défaut améliorée
+            return "Je comprends votre question sur '" + input + "'. Pourriez-vous me donner plus de détails pour que je puisse vous aider au mieux ?";
         }
 
         function appendMessage(text, sender) {
-            const wrapper = document.createElement('div');
-            wrapper.className = sender === 'user' ? "flex justify-end" : "flex gap-3";
-
-            const html = sender === 'user' 
-                ? `<div class="bg-indigo-600 text-white p-4 rounded-2xl rounded-tr-none max-w-[85%] text-sm shadow-xl">${text}</div>`
-                : `<div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0"><i class="fas fa-robot text-indigo-400 text-xs"></i></div>
-                   <div class="bg-slate-800/80 text-slate-200 p-4 rounded-2xl rounded-tl-none max-w-[85%] text-sm leading-relaxed border border-white/5">${text}</div>`;
+            const side = sender === 'user' ? "justify-end" : "justify-start";
+            const color = sender === 'user' ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200";
+            const radius = sender === 'user' ? "rounded-tr-none" : "rounded-tl-none";
             
-            wrapper.innerHTML = html;
-            chatBox.appendChild(wrapper);
-            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+            const msg = `
+                <div class="flex ${side}">
+                    <div class="${color} p-3 rounded-2xl ${radius} text-sm max-w-[80%] shadow-md">
+                        ${text}
+                    </div>
+                </div>`;
+            chatBox.insertAdjacentHTML('beforeend', msg);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         userInput.addEventListener("keypress", (e) => { if(e.key === "Enter") askFari(); });
     </script>
 </body>
 </html>
+
